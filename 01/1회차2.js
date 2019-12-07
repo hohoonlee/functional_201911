@@ -190,3 +190,4 @@ const bj = {
 	}, '저는 ', '입니다')
 };
 console.log(bj.greet());
+console.log(bj.greet.bind({name:'PJ'})());
