@@ -78,11 +78,11 @@ const compose = (...params)=>{
 	}
 };
 const _ = Symbol('_');
-const partial = (f, ...params)=>{
-	return (...p)=> {
+const partial =  (f, ...params) => {
+	return function (...p) {
 		const newParams = map(params, v=>(v === _)?p.shift():v);
 		if(p) newParams.push(...p);
-		return f(...newParams);
+		return f.bind(this)(...newParams);
 	};
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////

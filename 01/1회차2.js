@@ -76,11 +76,11 @@ const compose = (...params)=>{
 	}
 };
 const _ = Symbol('_');
-const partial = (f, ...params)=>{
-	return (...p)=> {
+const partial =  (f, ...params) => {
+	return function (...p) {
 		const newParams = map(params, v=>(v === _)?p.shift():v);
 		if(p) newParams.push(...p);
-		return f(...newParams);
+		return f.bind(this)(...newParams);
 	};
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,7 +163,7 @@ console.log('partial ----------------------');
 function add() {
 	var result = 0;
 	for (var i = 0; i < arguments.length; i++) {
-	  result += arguments[i];
+	  	result += arguments[i];
 	}
 	return result;
 }
@@ -171,4 +171,22 @@ function add() {
 const add1 = partial(add, 1, _, 3, 4, 5);
 assertLog(add(1, 2, 3, 4, 5), add1(2));
 assertLog(21, add1(2, 6));
-  
+
+const add3 = partial(add, _, _, 3, _, _);
+assertLog(15, add3(1, 2, 4, 5));
+assertLog(203, add3(50, 50, 50, 50));
+assertLog(403, add3(100, 100, 100, 100));
+
+const abc = (a, b, c) => {
+	console.log(a, b, c);
+}
+partial(abc, _, 'b', _)('a', 'c');
+partial(abc, _, 'b')('a', 'c');
+
+const bj = {
+	name: 'BJ',
+	greet: partial(function(a, b) {
+		return a + this.name + b;
+	}, '저는 ', '입니다')
+};
+console.log(bj.greet());
